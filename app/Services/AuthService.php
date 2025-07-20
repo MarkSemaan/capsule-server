@@ -21,6 +21,8 @@ class AuthService
         }
 
         $user = JWTAuth::user();
+        $user->token_version += 1;
+        $user->save();
 
         return [
             'user' => $user,
