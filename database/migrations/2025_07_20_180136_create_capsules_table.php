@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained('users');
             $table->text('message')->nullable();
             $table->string('location')->nullable();
-            $table->dateTime('revealDate');
+            $table->dateTime('reveal_date');
             $table->enum('privacy', ['private', 'public', 'unlisted'])->default('private');
             $table->boolean('surprise_mode')->default(false);
             $table->timestamps();

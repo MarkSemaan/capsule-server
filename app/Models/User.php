@@ -60,4 +60,9 @@ class User extends Authenticatable implements JWTSubject
             'token_version' => $this->token_version,
         ];
     }
+
+    public function capsules()
+    {
+        return $this->hasMany(Capsule::class);
+    }
 }
