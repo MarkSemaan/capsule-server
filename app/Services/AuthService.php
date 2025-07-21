@@ -24,6 +24,8 @@ class AuthService
         $user->token_version += 1;
         $user->save();
 
+        $token = JWTAuth::fromUser($user);
+
         return [
             'user' => $user,
             'token' => $token,
@@ -38,7 +40,7 @@ class AuthService
             'password' => Hash::make($data['password']),
         ]);
 
-        $token = JWTAuth::login($user);
+        $token = JWTAuth::fromUser($user);
 
         return [
             'user' => $user,

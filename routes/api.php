@@ -3,7 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\TodoController;
+use App\Http\Controllers\CapsuleController;
 use App\Http\Middleware\CheckTokenVersion;
 
 Route::controller(AuthController::class)->group(function () {
@@ -18,9 +18,18 @@ Route::controller(AuthController::class)->group(function () {
 });
 
 Route::middleware([CheckTokenVersion::class, 'auth:api'])->group(function () {
-    Route::controller(TodoController::class)->group(function () {
-        Route::get('todos', 'index');
-        Route::post('todo', 'store');
-        Route::get('todo/{id}', 'show');
+    Route::controller(CapsuleController::class)->group(function () {
+        Route::post('/capsules', 'store');
+        Route::delete('/capsules/{id}', 'destroy');
+        Route::get('/my-capsules', 'myCapsules');
+        Route::get('/upcoming-capsules', 'upcomingCapsules');
+    });
+});
+
+Route::group(['prefix' => 'public'], function () {
+    Route::controller(CapsuleController::class)->group(function () {
+        Route::get('/capsules/{id}', 'show');
+        Route::get('/revealed-capsules', 'revealedCapsules');
+        Route::get('/public-capsules', 'publicCapsules');
     });
 });
