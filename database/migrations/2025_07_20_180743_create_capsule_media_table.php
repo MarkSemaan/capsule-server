@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('capsule_media', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('capsule_id')->constrained('capsules');
+            $table->foreignId('capsule_id')->constrained('capsules')->onDelete('cascade');
             $table->enum('type', ['image', 'audio', 'text']);
             $table->text('content');
             $table->timestamps();
