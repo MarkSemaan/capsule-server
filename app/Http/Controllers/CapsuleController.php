@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Traits\ApiResponse;
 use App\Services\CapsuleService;
+use Stevebauman\Location\Facades\Location;
 
 class CapsuleController extends Controller
 {
@@ -18,6 +19,7 @@ class CapsuleController extends Controller
 
     public function store(Request $request)
     {
+        $location = Location::Get($request->ip());
         $validatedData = $request->validate([
             "message" => "required|string",
             "location" => "required|string",
@@ -25,6 +27,8 @@ class CapsuleController extends Controller
             'privacy' => 'required|in:private,public,unlisted',
             'surprise_mode' => 'required|boolean',
         ]);
+
+        $validatedData['location'] = $location->countryName;
 
         $capsule = $this->capsuleService->store($validatedData, auth('api')->user());
         return  $this->successResponse($capsule);
