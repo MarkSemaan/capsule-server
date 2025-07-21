@@ -22,10 +22,6 @@ class CapsuleMediaService
     }
     public function destroy(int $id)
     {
-        $media = CapsuleMedia::find($id);
-        if (!$media) {
-            return false;
-        }
-        return $media->delete();
+        return CapsuleMedia::destroy($id);
     }
 }
