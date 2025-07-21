@@ -63,13 +63,12 @@ class CapsuleMediaController extends Controller
 
         $user = auth('api')->user();
         $media = CapsuleMedia::whereHas('capsule', function ($query) use ($user) {
-            $query->where('user_id', $user->id);
+            $query->where('user_id', $user->id());
         })->find($id);
 
         if (!$media) {
             return $this->notFoundResponse('Media not found or access denied!');
         }
-
         $deleted = $this->mediaService->destroy($id);
         if (!$deleted) {
             return $this->notFoundResponse('Media not found!');
