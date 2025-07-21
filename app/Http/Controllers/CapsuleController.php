@@ -22,7 +22,7 @@ class CapsuleController extends Controller
         $location = Location::Get($request->ip());
         $validatedData = $request->validate([
             "message" => "required|string",
-            "location" => "required|string",
+            "location" => "nullable|string",
             "reveal_date" => 'required|date',
             'privacy' => 'required|in:private,public,unlisted',
             'surprise_mode' => 'required|boolean',
