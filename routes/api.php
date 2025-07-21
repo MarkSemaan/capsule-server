@@ -6,6 +6,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CapsuleController;
 use App\Http\Controllers\CapsuleMediaController;
 use App\Http\Middleware\CheckTokenVersion;
+use App\Http\Controllers\TagController;
 
 Route::controller(AuthController::class)->group(function () {
     Route::post('login', 'login');
@@ -31,6 +32,17 @@ Route::middleware([CheckTokenVersion::class, 'auth:api'])->group(function () {
         Route::get('/capsule-media/{id}', 'show');
         Route::get('/capsules/{capsuleId}/media', 'getCapsuleMedia');
         Route::delete('/capsule-media/{id}', 'destroy');
+    });
+
+    Route::controller(TagController::class)->group(function () {
+        Route::post('/tags', 'store');                           // Create tag
+        Route::get('/tags', 'index');                            // Get all tags
+        Route::get('/tags/{id}', 'show');                        // Get specific tag
+        Route::delete('/tags/{id}', 'destroy');                  // Delete tag
+
+        Route::post('/capsules/{capsuleId}/tags', 'attachToCapsule');
+        Route::delete('/capsules/{capsuleId}/tags/{tagId}', 'detachFromCapsule');
+        Route::get('/capsules/{capsuleId}/tags', 'getCapsuleTags');
     });
 });
 

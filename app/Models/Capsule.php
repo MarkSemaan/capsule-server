@@ -15,6 +15,11 @@ class Capsule extends Model
         "surprise_mode",
     ];
 
+    protected $casts = [
+        'reveal_date' => 'datetime',
+        'surprise_mode' => 'boolean',
+    ];
+
     public function user()
     {
         return $this->belongsTo(User::class);

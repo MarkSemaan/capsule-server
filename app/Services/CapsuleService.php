@@ -22,7 +22,14 @@ class CapsuleService
     }
     public function myCapsules(User $user)
     {
-        return $user->capsules()->with(['capsuleMedia', 'tags'])->get();
+        $capsules = $user->capsules()->with(['capsuleMedia', 'tags'])->get();
+        return $capsules->map(function ($capsule) {
+            if ($capsule->surprise_mode && $capsule->reveal_date > now()) {
+                $capsule->message = null;
+                $capsule->setRelation('capsuleMedia', collect());
+            }
+            return $capsule;
+        });
     }
     public function revealedCapsules(): Collection
     {
