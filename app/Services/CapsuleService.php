@@ -24,20 +24,20 @@ class CapsuleService
     {
         return $user->capsules()->with(['capsuleMedia', 'tags'])->get();
     }
-    public function revealedCapsules()
+    public function revealedCapsules(): Collection
     {
         return Capsule::where('reveal_date', '<=', now())
             ->with(['capsuleMedia', 'tags'])
             ->get();
     }
-    public function publicCapsules()
+    public function publicCapsules(): Collection
     {
         return Capsule::where('reveal_date', '<=', now())
             ->where('privacy', 'public')
             ->with(['capsuleMedia', 'tags'])
             ->get();
     }
-    public function userUpcomingCapsules(User $user)
+    public function userUpcomingCapsules(User $user): Collection
     {
         return $user->capsules()->where('reveal_date', '>', now())
             ->with(['capsuleMedia', 'tags'])->get();
