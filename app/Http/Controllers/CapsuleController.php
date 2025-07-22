@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Traits\ApiResponse;
 use App\Services\CapsuleService;
 use Stevebauman\Location\Facades\Location;
+use Illuminate\Support\Facades\Log;
 
 class CapsuleController extends Controller
 {
@@ -60,6 +61,7 @@ class CapsuleController extends Controller
     public function myCapsules()
     {
         $capsules = $this->capsuleService->myCapsules(auth('api')->user());
+        Log::info('My capsules response:', $capsules->toArray());
         return $this->successResponse($capsules);
     }
 
