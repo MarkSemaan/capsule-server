@@ -29,7 +29,7 @@ class CapsuleController extends Controller
             'surprise_mode' => 'required|boolean',
         ]);
 
-        // Handle case where location service returns false
+        // since this is a local server, it will show Unknown
         $validatedData['location'] = $location ? $location->countryName : 'Unknown Location';
 
         $capsule = $this->capsuleService->store($validatedData, auth('api')->user());

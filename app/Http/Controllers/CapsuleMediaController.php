@@ -8,7 +8,6 @@ use App\Services\CapsuleMediaService;
 use App\Models\CapsuleMedia;
 use Illuminate\Support\Facades\Log;
 
-
 class CapsuleMediaController extends Controller
 {
     use ApiResponse;
@@ -106,6 +105,8 @@ class CapsuleMediaController extends Controller
         return $this->successResponse(null, 'Media deleted.');
     }
 
+
+    // helper functions to determine and validate files
     private function determineFileType($file)
     {
         $mimeType = $file->getMimeType();
