@@ -14,7 +14,7 @@ class CapsuleService
     }
     public function show($id)
     {
-        return Capsule::find($id);
+        return Capsule::with(['capsuleMedia', 'tags', 'user'])->find($id);
     }
     public function deleteCapsule(int $id, User $user)
     {
@@ -22,7 +22,7 @@ class CapsuleService
     }
     public function myCapsules(User $user)
     {
-        $capsules = $user->capsules()->with(['capsuleMedia', 'tags'])->get();
+        $capsules = $user->capsules()->with(['capsuleMedia', 'tags', 'user'])->get();
         return $capsules->map(function ($capsule) {
             if ($capsule->surprise_mode && $capsule->reveal_date > now()) {
                 $capsule->message = null;
@@ -34,19 +34,19 @@ class CapsuleService
     public function revealedCapsules(): Collection
     {
         return Capsule::where('reveal_date', '<=', now())
-            ->with(['capsuleMedia', 'tags'])
+            ->with(['capsuleMedia', 'tags', 'user'])
             ->get();
     }
     public function publicCapsules(): Collection
     {
         return Capsule::where('reveal_date', '<=', now())
             ->where('privacy', 'public')
-            ->with(['capsuleMedia', 'tags'])
+            ->with(['capsuleMedia', 'tags', 'user'])
             ->get();
     }
     public function userUpcomingCapsules(User $user): Collection
     {
         return $user->capsules()->where('reveal_date', '>', now())
-            ->with(['capsuleMedia', 'tags'])->get();
+            ->with(['capsuleMedia', 'tags', 'user'])->get();
     }
 }

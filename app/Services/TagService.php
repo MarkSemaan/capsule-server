@@ -10,8 +10,20 @@ class TagService
 {
     public function store(array $data)
     {
+        // First check if tag already exists
+        $existingTag = $this->findByName($data['name']);
+        if ($existingTag) {
+            return $existingTag;
+        }
+
         return Tag::create($data);
     }
+
+    public function findByName($name)
+    {
+        return Tag::where('name', $name)->first();
+    }
+
     public function show($id)
     {
         return Tag::find($id);
@@ -40,7 +52,11 @@ class TagService
             return false;
         }
 
-        Capsule::find($capsuleId)->tags()->attach($tagId);
+        // Check if already attached to avoid duplicates
+        if (!$capsule->tags()->where('tag_id', $tagId)->exists()) {
+            $capsule->tags()->attach($tagId);
+        }
+
         return true;
     }
 
