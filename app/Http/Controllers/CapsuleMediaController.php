@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Traits\ApiResponse;
 use App\Services\CapsuleMediaService;
 use App\Models\CapsuleMedia;
+use Illuminate\Support\Facades\Log;
 
 
 class CapsuleMediaController extends Controller
@@ -20,27 +21,56 @@ class CapsuleMediaController extends Controller
 
     public function store(Request $request)
     {
-        $capsuleId = $request->input('capsule_id');
-        $file = $request->file("file");
-        $type = $this->determineFileType($file);
-        $this->validateFile($request, $type);
-
-
-        $user = auth('api')->user();
-        $capsule = $user->capsules()->find($capsuleId);
-        if (!$capsule) {
-            return $this->notFoundResponse('Capsule not found or access denied');
-        }
-
-        $base64 = base64_encode(file_get_contents($file->getRealPath()));
-
-        $media = $this->mediaService->store([
-            "capsule_id" => $capsuleId,
-            "type" => $type,
-            'content' => $base64,
+        Log::info('Media upload request received', [
+            'request_data' => $request->all(),
+            'files' => $request->allFiles(),
+            'headers' => $request->headers->all()
         ]);
 
-        return $this->successResponse($media);
+        try {
+            $capsuleId = $request->input('capsule_id');
+            $file = $request->file("file");
+
+            if (!$file) {
+                Log::error('No file received in request');
+                return $this->errorResponse('No file received', 400);
+            }
+
+            if (!$file->isValid()) {
+                Log::error('Invalid file received', ['file_error' => $file->getErrorMessage()]);
+                return $this->errorResponse('Invalid file: ' . $file->getErrorMessage(), 400);
+            }
+
+            $type = $this->determineFileType($file);
+            $this->validateFile($request, $type);
+
+            $user = auth('api')->user();
+            $capsule = $user->capsules()->find($capsuleId);
+            if (!$capsule) {
+                Log::error('Capsule not found or access denied', [
+                    'capsule_id' => $capsuleId,
+                    'user_id' => $user->id
+                ]);
+                return $this->notFoundResponse('Capsule not found or access denied');
+            }
+
+            $base64 = base64_encode(file_get_contents($file->getRealPath()));
+
+            $media = $this->mediaService->store([
+                "capsule_id" => $capsuleId,
+                "type" => $type,
+                'content' => $base64,
+            ]);
+
+            Log::info('Media uploaded successfully', ['media_id' => $media->id]);
+            return $this->successResponse($media);
+        } catch (\Exception $e) {
+            Log::error('Media upload failed with exception', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            return $this->errorResponse('Media upload failed: ' . $e->getMessage(), 500);
+        }
     }
 
     public function show($id)

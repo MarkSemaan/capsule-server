@@ -9,7 +9,7 @@ class Tag extends Model
     protected $fillable = [
         "name",
     ];
-    public function capsule()
+    public function capsules()
     {
         return $this->belongsToMany(Capsule::class, "capsule_tags");
     }

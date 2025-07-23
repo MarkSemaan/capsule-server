@@ -19,6 +19,11 @@ class TagController extends Controller
 
     public function store(Request $request)
     {
+        Log::info('Tag creation request received', [
+            'request_data' => $request->all(),
+            'headers' => $request->headers->all()
+        ]);
+
         $validatedData = $request->validate([
             "name" => "required|string",
         ]);
@@ -55,6 +60,21 @@ class TagController extends Controller
         $tags = $this->tagService->index();
 
         return $this->successResponse($tags);
+    }
+
+    public function findByName(Request $request)
+    {
+        $validatedData = $request->validate([
+            'name' => 'required|string'
+        ]);
+
+        $tag = $this->tagService->findByName($validatedData['name']);
+
+        if (!$tag) {
+            return $this->notFoundResponse('Tag not found');
+        }
+
+        return $this->successResponse($tag);
     }
 
     public function attachToCapsule(Request $request, $capsuleId)
