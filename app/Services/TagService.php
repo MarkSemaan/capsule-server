@@ -10,7 +10,7 @@ class TagService
 {
     public function store(array $data)
     {
-        // First check if tag already exists
+        // check if tag exists first
         $existingTag = $this->findByName($data['name']);
         if ($existingTag) {
             return $existingTag;
