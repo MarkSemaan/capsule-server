@@ -121,8 +121,8 @@ class CapsuleMediaController extends Controller
     private function validateFile(Request $request, $type)
     {
         $rules = [
-            'image' => 'required|image|mimes:jpg,jpeg,png|max:2048',
-            'audio' => 'required|mimes:mp3,wav|max:10240',
+            'image' => 'required|image|mimes:jpg,jpeg,png,gif,webp|max:2048',
+            'audio' => 'required|mimes:mp3,wav,m4a,aac|max:10240',
         ];
 
         $request->validate([

@@ -37,6 +37,7 @@ Route::middleware([CheckTokenVersion::class, 'auth:api'])->group(function () {
     Route::controller(TagController::class)->group(function () {
         Route::post('/tags', 'store');                           // Create tag
         Route::get('/tags', 'index');                            // Get all tags
+        Route::get('/tags/find', 'findByName');                  // Find tag by name
         Route::get('/tags/{id}', 'show');                        // Get specific tag
         Route::delete('/tags/{id}', 'destroy');                  // Delete tag
 
